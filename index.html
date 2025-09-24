@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Selamat Ulang Tahun!</title>
+  <style>
+    :root{
+      --bg1: #ff9a9e; --bg2: #fad0c4; --card:#ffffff; --primary:#ff4d6d; --muted:#666;
+    }
+    [data-theme="dark"]{ --bg1:#0f1724; --bg2:#071027; --card:#0b1220; --primary:#ff7aa2; --muted:#bfc7d6 }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background:linear-gradient(120deg,var(--bg1),var(--bg2)); min-height:100vh; color:#222; overflow-x:hidden}
+
+    /* Semua teks jadi putih saat dark mode */
+    [data-theme="dark"],
+    [data-theme="dark"] h1,
+    [data-theme="dark"] h2,
+    [data-theme="dark"] h3,
+    [data-theme="dark"] p,
+    [data-theme="dark"] li,
+    [data-theme="dark"] label,
+    [data-theme="dark"] span,
+    [data-theme="dark"] div,
+    [data-theme="dark"] strong {
+      color: white !important;
+    }
+
+    .stars{position:fixed;inset:0;pointer-events:none;z-index:0;background-image:radial-gradient(white 1px, transparent 1px);background-size:3px 3px;opacity:0.06}
+    .container{position:relative;z-index:2;max-width:1000px;margin:0 auto;padding:40px 20px}
+
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:56px;height:56px;border-radius:12px;object-fit:cover;border:3px solid rgba(255,255,255,0.3)}
+    h1{font-size:28px;margin:0;color:#fff;text-shadow:0 3px 10px rgba(0,0,0,0.25)}
+    .controls{display:flex;gap:10px;align-items:center}
+    .btn{background:var(--primary);color:#fff;border:none;padding:10px 16px;border-radius:999px;cursor:pointer;font-weight:600}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.2)}
+
+    .hero{display:flex;flex-wrap:wrap;gap:20px;align-items:center;margin-top:24px}
+    .hero-left{flex:1;min-width:260px}
+    .hero-right{width:320px;min-width:240px}
+    .card{background:var(--card);padding:18px;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,0.12)}
+
+    .typing{font-size:20px;min-height:36px}
+    .surprise{margin-top:12px}
+
+    .profile{display:flex;gap:14px;align-items:center}
+    .avatar{width:92px;height:92px;border-radius:14px;object-fit:cover}
+    .meta h2{margin:0 0 6px 0}
+
+    .countdown{display:flex;gap:12px;margin-top:12px}
+    .count-item{background:linear-gradient(135deg,rgba(255,255,255,0.95),rgba(255,255,255,0.9));padding:12px;border-radius:10px;min-width:70px;text-align:center}
+    [data-theme="dark"] .count-item{background:linear-gradient(135deg,rgba(255,255,255,0.15),rgba(255,255,255,0.05))}
+    .small{font-size:12px}
+
+    .gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-top:14px}
+    .gallery-grid img{width:100%;height:250px;object-fit:cover;border-radius:8px;cursor:pointer}
+
+    .lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;z-index:60}
+    .lightbox img{max-width:90%;max-height:90%;border-radius:10px}
+
+    form{display:flex;flex-direction:column;gap:8px}
+    input,textarea{padding:10px;border-radius:8px;border:1px solid rgba(0,0,0,0.08)}
+    textarea{min-height:80px;resize:vertical}
+    .messages{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+    .msg{background:linear-gradient(135deg,rgba(255,255,255,0.95),rgba(255,255,255,0.9));padding:10px;border-radius:10px}
+    [data-theme="dark"] .msg{background:linear-gradient(135deg,rgba(255,255,255,0.1),rgba(255,255,255,0.05))}
+
+    @media (max-width:720px){.hero{flex-direction:column}.hero-right{order:-1;width:100%}}
+
+    .effects{position:fixed;inset:0;pointer-events:none;z-index:50}
+    .balloon{position:absolute;bottom:-160px;width:64px;height:84px;border-radius:50%;opacity:0.9;cursor:pointer}
+    .confetti{position:absolute;width:10px;height:14px;border-radius:2px}
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+  <div class="effects" id="effects"></div>
+
+  <div class="container">
+    <header>
+      <div class="brand">
+        <img id="fotoProfil" src="" alt="foto" class="logo">
+        <div>
+          <h1 id="judul">🎉 Selamat Ulang Tahun!</h1>
+          <div class="small" id="subjudul">Klik "Mulai Kejutan" untuk memulai</div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="btn ghost" id="darkToggle">🌙 Mode Gelap</button>
+        <button class="btn" id="startBtn">Mulai Kejutan 🎉</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- Hero -->
+      <section class="hero">
+        <div class="hero-left">
+          <div class="card">
+            <div class="typing" id="typing"></div>
+            <div class="surprise">🎁 Semoga semua harapanmu tercapai!</div>
+          </div>
+        </div>
+        <div class="hero-right">
+          <div class="card profile">
+            <img id="avatar" src="" alt="avatar" class="avatar">
+            <div class="meta">
+              <h2 id="nama"></h2>
+              <div><strong>Tanggal Lahir:</strong> <span id="ttl"></span></div>
+              <div><strong>Umur:</strong> <span id="umur"></span> tahun</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Countdown -->
+      <section style="margin-top:20px">
+        <h2>⏳ Hitung Mundur Ulang Tahun Berikutnya</h2>
+        <div class="countdown" id="countdown"></div>
+      </section>
+
+      <!-- Gallery -->
+      <section style="margin-top:20px">
+        <h2>📸 Kenangan Bersama</h2>
+        <div class="gallery-grid">
+          <img src="inu1.jpg" alt="foto1">
+          <img src="inu2.jpg" alt="foto2">
+          <img src="inu3.jpg" alt="foto4">
+          <img src="inu4.jpg" alt="foto3">
+        </div>
+      </section>
+
+      <!-- Video -->
+      <section style="margin-top:20px">
+        <h2>🎬 Video Spesial</h2>
+        <div class="card">
+          <iframe id="videoEmbed" width="100%" height="500" frameborder="0" allowfullscreen></iframe>
+        </div>
+      </section>
+
+      <!-- Guestbook -->
+      <section style="margin-top:20px">
+        <h2>💌 Buku Tamu</h2>
+        <form id="guestForm">
+          <input id="gName" placeholder="Nama" required>
+          <textarea id="gMessage" placeholder="Tulis ucapanmu..." required></textarea>
+          <button class="btn" type="submit">Kirim</button>
+        </form>
+        <button class="btn ghost" id="clearMessages">Hapus Semua</button>
+        <div class="messages" id="messages"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox"><img id="lightboxImg" src=""></div>
+
+  <!-- Audio -->
+  <audio id="music"><source src="happy-birthday.mp3" type="audio/mpeg"></audio>
+  <audio id="popSound"><source src="pop.mp3" type="audio/mpeg"></audio>
+
+  <script>
+    const config={
+      nama:'Muhammad Ibnu Nasution',
+      tanggalLahir:'2002-11-23',
+      fotoProfil:'inu5.jpg',
+      avatar:'inu5.jpg',
+      youtube:'jj.mp4',
+      music:'happy-birthday.mp3'
+    };
+    document.getElementById('nama').innerText=config.nama;
+    document.getElementById('ttl').innerText=new Date(config.tanggalLahir).toLocaleDateString();
+    document.getElementById('umur').innerText=new Date().getFullYear()-new Date(config.tanggalLahir).getFullYear();
+    document.getElementById('fotoProfil').src=config.fotoProfil;
+    document.getElementById('avatar').src=config.avatar;
+    document.getElementById('videoEmbed').src=config.youtube;
+
+    // Typing effect
+    const typingText=`Selamat ulang tahun ${config.nama}! Semoga panjang umur, sehat selalu, dan sukses selalu 🎂🎉`;
+    let i=0;function type(){if(i<typingText.length){document.getElementById('typing').innerHTML+=typingText.charAt(i);i++;setTimeout(type,80);}}
+    type();
+
+    // Countdown
+    function updateCountdown(){
+      const now=new Date();
+      let next=new Date(now.getFullYear(),new Date(config.tanggalLahir).getMonth(),new Date(config.tanggalLahir).getDate());
+      if(next<now) next.setFullYear(next.getFullYear()+1);
+      const diff=next-now;
+      const d=Math.floor(diff/1000/60/60/24);
+      const h=Math.floor(diff/1000/60/60)%24;
+      const m=Math.floor(diff/1000/60)%60;
+      const s=Math.floor(diff/1000)%60;
+      document.getElementById('countdown').innerHTML=`
+        <div class="count-item"><div>${d}</div><div class="small">Hari</div></div>
+        <div class="count-item"><div>${h}</div><div class="small">Jam</div></div>
+        <div class="count-item"><div>${m}</div><div class="small">Menit</div></div>
+        <div class="count-item"><div>${s}</div><div class="small">Detik</div></div>`;
+    }
+    setInterval(updateCountdown,1000);updateCountdown();
+
+    // Lightbox
+    document.querySelectorAll('.gallery-grid img').forEach(img=>{
+      img.addEventListener('click',()=>{document.getElementById('lightbox').style.display='flex';document.getElementById('lightboxImg').src=img.src;});
+    });
+    document.getElementById('lightbox').addEventListener('click',()=>{document.getElementById('lightbox').style.display='none';});
+
+    // Guestbook
+    const STORAGE_KEY='guestbook';
+    function loadMessages(){const arr=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');document.getElementById('messages').innerHTML=arr.map(m=>`<div class="msg"><strong>${m.name}</strong><br>${m.text}</div>`).join('');}
+    function saveMessage(m){const arr=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');arr.push(m);localStorage.setItem(STORAGE_KEY,JSON.stringify(arr));}
+    document.getElementById('guestForm').addEventListener('submit',e=>{e.preventDefault();const name=document.getElementById('gName').value,text=document.getElementById('gMessage').value;if(!name||!text) return;saveMessage({name,text});loadMessages();e.target.reset();});
+    document.getElementById('clearMessages').addEventListener('click',()=>{if(confirm('Hapus semua pesan?')){localStorage.removeItem(STORAGE_KEY);loadMessages();}});
+    loadMessages();
+
+    // Dark mode toggle
+    const toggle=document.getElementById('darkToggle');
+    toggle.addEventListener('click',()=>{if(document.documentElement.getAttribute('data-theme')==='dark'){document.documentElement.removeAttribute('data-theme');toggle.textContent='🌙 Mode Gelap';}else{document.documentElement.setAttribute('data-theme','dark');toggle.textContent='☀️ Mode Terang';}});
+
+    // Balloons & confetti
+    const effects=document.getElementById('effects');
+    function createBalloon(){const b=document.createElement('div');b.className='balloon';const colors=['#ff4d6d','#ffb347','#87ceeb','#77dd77','#cba6f7'];b.style.background=colors[Math.floor(Math.random()*colors.length)];b.style.left=Math.random()*100+'%';b.style.width=b.style.height=(40+Math.random()*60)+'px';const duration=6+Math.random()*6;b.style.transition=`transform ${duration}s linear`;effects.appendChild(b);requestAnimationFrame(()=>{b.style.transform=`translateY(-120vh)`;});setTimeout(()=>b.remove(),(duration+1)*1000);b.addEventListener('click',()=>popBalloon(b));}
+    function popBalloon(b){const popSound=document.getElementById('popSound');popSound.currentTime=0;popSound.play();if(navigator.vibrate){navigator.vibrate([100,50,100]);}for(let i=0;i<15;i++){const c=document.createElement('div');c.className='confetti';const colors=['#ff4d6d','#ffb347','#87ceeb','#77dd77','#cba6f7'];c.style.background=colors[Math.floor(Math.random()*colors.length)];c.style.left=b.offsetLeft+'px';c.style.top=b.offsetTop+'px';effects.appendChild(c);const x=(Math.random()-0.5)*200,y=(Math.random()-1)*200;c.animate([{transform:`translate(0,0)`,opacity:1},{transform:`translate(${x}px,${y}px)`,opacity:0}],{duration:800,fill:"forwards"});setTimeout(()=>c.remove(),800);}b.remove();}
+    function launchConfetti(count=80){for(let i=0;i<count;i++){const c=document.createElement('div');c.className='confetti';const colors=['#ff4d6d','#ffb347','#87ceeb','#77dd77','#cba6f7','#fff176'];c.style.background=colors[Math.floor(Math.random()*colors.length)];c.style.left=Math.random()*100+'%';c.style.bottom='0';effects.appendChild(c);const x=(Math.random()-0.5)*300,y=-Math.random()*500-200;c.animate([{transform:`translate(0,0)`,opacity:1},{transform:`translate(${x}px,${y}px)`,opacity:0}],{duration:2000,fill:"forwards"});setTimeout(()=>c.remove(),2000);}}
+
+    // Start
+    const startBtn=document.getElementById('startBtn');const music=document.getElementById('music');let balloonInterval;
+    startBtn.addEventListener('click',()=>{music.play();launchConfetti(120);if(!balloonInterval) balloonInterval=setInterval(createBalloon,700);startBtn.style.display='none';document.getElementById('subjudul').innerText='Kejutan dimulai!';});
+  </script>
+</body>
+</html>
