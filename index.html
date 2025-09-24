@@ -126,8 +126,8 @@
         <div class="gallery-grid">
           <img src="inu1.jpg" alt="foto1">
           <img src="inu2.jpg" alt="foto2">
-          <img src="inu3.jpg" alt="foto4">
-          <img src="inu4.jpg" alt="foto3">
+          <img src="inu3.jpg" alt="foto3">
+          <img src="inu4.jpg" alt="foto4">
         </div>
       </section>
 
@@ -147,7 +147,6 @@
           <textarea id="gMessage" placeholder="Tulis ucapanmu..." required></textarea>
           <button class="btn" type="submit">Kirim</button>
         </form>
-        <button class="btn ghost" id="clearMessages">Hapus Semua</button>
         <div class="messages" id="messages"></div>
       </section>
     </main>
@@ -178,7 +177,14 @@
 
     // Typing effect
     const typingText=`Selamat ulang tahun ${config.nama}! Semoga panjang umur, sehat selalu, dan sukses selalu 🎂🎉`;
-    let i=0;function type(){if(i<typingText.length){document.getElementById('typing').innerHTML+=typingText.charAt(i);i++;setTimeout(type,80);}}
+    let i=0;
+    function type(){
+      if(i<typingText.length){
+        document.getElementById('typing').innerHTML+=typingText.charAt(i);
+        i++;
+        setTimeout(type,80);
+      }
+    }
     type();
 
     // Countdown
@@ -201,31 +207,109 @@
 
     // Lightbox
     document.querySelectorAll('.gallery-grid img').forEach(img=>{
-      img.addEventListener('click',()=>{document.getElementById('lightbox').style.display='flex';document.getElementById('lightboxImg').src=img.src;});
+      img.addEventListener('click',()=>{
+        document.getElementById('lightbox').style.display='flex';
+        document.getElementById('lightboxImg').src=img.src;
+      });
     });
-    document.getElementById('lightbox').addEventListener('click',()=>{document.getElementById('lightbox').style.display='none';});
+    document.getElementById('lightbox').addEventListener('click',()=>{
+      document.getElementById('lightbox').style.display='none';
+    });
 
-    // Guestbook
+    // Guestbook (hanya tambah pesan, tidak bisa hapus)
     const STORAGE_KEY='guestbook';
-    function loadMessages(){const arr=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');document.getElementById('messages').innerHTML=arr.map(m=>`<div class="msg"><strong>${m.name}</strong><br>${m.text}</div>`).join('');}
-    function saveMessage(m){const arr=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');arr.push(m);localStorage.setItem(STORAGE_KEY,JSON.stringify(arr));}
-    document.getElementById('guestForm').addEventListener('submit',e=>{e.preventDefault();const name=document.getElementById('gName').value,text=document.getElementById('gMessage').value;if(!name||!text) return;saveMessage({name,text});loadMessages();e.target.reset();});
-    document.getElementById('clearMessages').addEventListener('click',()=>{if(confirm('Hapus semua pesan?')){localStorage.removeItem(STORAGE_KEY);loadMessages();}});
+    function loadMessages(){
+      const arr=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+      document.getElementById('messages').innerHTML=arr.map(m=>`<div class="msg"><strong>${m.name}</strong><br>${m.text}</div>`).join('');
+    }
+    function saveMessage(m){
+      const arr=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');
+      arr.push(m);
+      localStorage.setItem(STORAGE_KEY,JSON.stringify(arr));
+    }
+    document.getElementById('guestForm').addEventListener('submit',e=>{
+      e.preventDefault();
+      const name=document.getElementById('gName').value;
+      const text=document.getElementById('gMessage').value;
+      if(!name||!text) return;
+      saveMessage({name,text});
+      loadMessages();
+      e.target.reset();
+    });
     loadMessages();
 
     // Dark mode toggle
     const toggle=document.getElementById('darkToggle');
-    toggle.addEventListener('click',()=>{if(document.documentElement.getAttribute('data-theme')==='dark'){document.documentElement.removeAttribute('data-theme');toggle.textContent='🌙 Mode Gelap';}else{document.documentElement.setAttribute('data-theme','dark');toggle.textContent='☀️ Mode Terang';}});
+    toggle.addEventListener('click',()=>{
+      if(document.documentElement.getAttribute('data-theme')==='dark'){
+        document.documentElement.removeAttribute('data-theme');
+        toggle.textContent='🌙 Mode Gelap';
+      }else{
+        document.documentElement.setAttribute('data-theme','dark');
+        toggle.textContent='☀️ Mode Terang';
+      }
+    });
 
     // Balloons & confetti
     const effects=document.getElementById('effects');
-    function createBalloon(){const b=document.createElement('div');b.className='balloon';const colors=['#ff4d6d','#ffb347','#87ceeb','#77dd77','#cba6f7'];b.style.background=colors[Math.floor(Math.random()*colors.length)];b.style.left=Math.random()*100+'%';b.style.width=b.style.height=(40+Math.random()*60)+'px';const duration=6+Math.random()*6;b.style.transition=`transform ${duration}s linear`;effects.appendChild(b);requestAnimationFrame(()=>{b.style.transform=`translateY(-120vh)`;});setTimeout(()=>b.remove(),(duration+1)*1000);b.addEventListener('click',()=>popBalloon(b));}
-    function popBalloon(b){const popSound=document.getElementById('popSound');popSound.currentTime=0;popSound.play();if(navigator.vibrate){navigator.vibrate([100,50,100]);}for(let i=0;i<15;i++){const c=document.createElement('div');c.className='confetti';const colors=['#ff4d6d','#ffb347','#87ceeb','#77dd77','#cba6f7'];c.style.background=colors[Math.floor(Math.random()*colors.length)];c.style.left=b.offsetLeft+'px';c.style.top=b.offsetTop+'px';effects.appendChild(c);const x=(Math.random()-0.5)*200,y=(Math.random()-1)*200;c.animate([{transform:`translate(0,0)`,opacity:1},{transform:`translate(${x}px,${y}px)`,opacity:0}],{duration:800,fill:"forwards"});setTimeout(()=>c.remove(),800);}b.remove();}
-    function launchConfetti(count=80){for(let i=0;i<count;i++){const c=document.createElement('div');c.className='confetti';const colors=['#ff4d6d','#ffb347','#87ceeb','#77dd77','#cba6f7','#fff176'];c.style.background=colors[Math.floor(Math.random()*colors.length)];c.style.left=Math.random()*100+'%';c.style.bottom='0';effects.appendChild(c);const x=(Math.random()-0.5)*300,y=-Math.random()*500-200;c.animate([{transform:`translate(0,0)`,opacity:1},{transform:`translate(${x}px,${y}px)`,opacity:0}],{duration:2000,fill:"forwards"});setTimeout(()=>c.remove(),2000);}}
+    function createBalloon(){
+      const b=document.createElement('div');
+      b.className='balloon';
+      const colors=['#ff4d6d','#ffb347','#87ceeb','#77dd77','#cba6f7'];
+      b.style.background=colors[Math.floor(Math.random()*colors.length)];
+      b.style.left=Math.random()*100+'%';
+      b.style.width=b.style.height=(40+Math.random()*60)+'px';
+      const duration=6+Math.random()*6;
+      b.style.transition=`transform ${duration}s linear`;
+      effects.appendChild(b);
+      requestAnimationFrame(()=>{b.style.transform=`translateY(-120vh)`;});
+      setTimeout(()=>b.remove(),(duration+1)*1000);
+      b.addEventListener('click',()=>popBalloon(b));
+    }
+    function popBalloon(b){
+      const popSound=document.getElementById('popSound');
+      popSound.currentTime=0; popSound.play();
+      if(navigator.vibrate){navigator.vibrate([100,50,100]);}
+      for(let i=0;i<15;i++){
+        const c=document.createElement('div');
+        c.className='confetti';
+        const colors=['#ff4d6d','#ffb347','#87ceeb','#77dd77','#cba6f7'];
+        c.style.background=colors[Math.floor(Math.random()*colors.length)];
+        c.style.left=b.offsetLeft+'px';
+        c.style.top=b.offsetTop+'px';
+        effects.appendChild(c);
+        const x=(Math.random()-0.5)*200,y=(Math.random()-1)*200;
+        c.animate([{transform:`translate(0,0)`,opacity:1},{transform:`translate(${x}px,${y}px)`,opacity:0}],{duration:800,fill:"forwards"});
+        setTimeout(()=>c.remove(),800);
+      }
+      b.remove();
+    }
+    function launchConfetti(count=80){
+      for(let i=0;i<count;i++){
+        const c=document.createElement('div');
+        c.className='confetti';
+        const colors=['#ff4d6d','#ffb347','#87ceeb','#77dd77','#cba6f7','#fff176'];
+        c.style.background=colors[Math.floor(Math.random()*colors.length)];
+        c.style.left=Math.random()*100+'%';
+        c.style.bottom='0';
+        effects.appendChild(c);
+        const x=(Math.random()-0.5)*300,y=-Math.random()*500-200;
+        c.animate([{transform:`translate(0,0)`,opacity:1},{transform:`translate(${x}px,${y}px)`,opacity:0}],{duration:2000,fill:"forwards"});
+        setTimeout(()=>c.remove(),2000);
+      }
+    }
 
     // Start
-    const startBtn=document.getElementById('startBtn');const music=document.getElementById('music');let balloonInterval;
-    startBtn.addEventListener('click',()=>{music.play();launchConfetti(120);if(!balloonInterval) balloonInterval=setInterval(createBalloon,700);startBtn.style.display='none';document.getElementById('subjudul').innerText='Kejutan dimulai!';});
+    const startBtn=document.getElementById('startBtn');
+    const music=document.getElementById('music');
+    let balloonInterval;
+    startBtn.addEventListener('click',()=>{
+      music.play();
+      launchConfetti(120);
+      if(!balloonInterval) balloonInterval=setInterval(createBalloon,700);
+      startBtn.style.display='none';
+      document.getElementById('subjudul').innerText='Kejutan dimulai!';
+    });
   </script>
 </body>
 </html>
