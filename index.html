@@ -61,6 +61,23 @@
     @keyframes floatUp{from{transform:translateY(0)}to{transform:translateY(-120vh)}}
     @keyframes sway{0%,100%{transform:translateX(0)}50%{transform:translateX(30px)}}
     .confetti{position:absolute;width:10px;height:14px;border-radius:2px}
+
+    /* ✅ responsive video */
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 */
+      overflow: hidden;
+      border-radius: 14px;
+      background: #000;
+    }
+    .video-wrapper video {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: contain; /* full video terlihat */
+      border-radius: 14px;
+    }
   </style>
 </head>
 <body>
@@ -104,7 +121,7 @@
       </section>
 
       <section style="margin-top:20px">
-        <h2>📸 Kenangan Bersama</h2>
+        <h2>📸 KETUA MAF1A</h2>
         <div class="gallery-grid">
           <img src="inu1.jpg"><img src="inu2.jpg"><img src="inu3.jpg"><img src="inu4.jpg">
         </div>
@@ -112,8 +129,8 @@
 
       <section style="margin-top:20px">
         <h2>🎬 Video Spesial</h2>
-        <div class="card">
-            <video id="videoEmbed" width="925" height="500" controls></video>
+        <div class="card video-wrapper">
+          <video id="videoEmbed" controls></video>
         </div>
       </section>
 
@@ -190,7 +207,7 @@
       let dur=6+Math.random()*6;
       b.style.animation=`floatUp ${dur}s linear forwards, sway 3s ease-in-out infinite`;
       effects.appendChild(b);
-      // Pop setelah durasi selesai (balon sudah sempat naik)
+      // Pop setelah durasi selesai
       setTimeout(()=>{if(document.body.contains(b))popBalloon(b)},dur*1000-500);
       b.onclick=()=>popBalloon(b);
     }
